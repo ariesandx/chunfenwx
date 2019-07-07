@@ -1,0 +1,22 @@
+# 公共配置
+spring:
+  # dubbo配置
+  dubbo:
+    address:
+    application:
+      name: nymph-dubbo
+
+  # 打包配置文件
+  profiles:
+    active: test
+
+# mybatis
+mybatis:
+#  config-location:  classpath:config/mybatis-config.xml
+  mapper-locations: classpath:mapper/*.xml
+
+#mybatis-plus:
+#  datasource: dataSource
+logging:
+  config: classpath:config/logging-config.xml
+#  mapper-locations: classpath:mapper/*.xml

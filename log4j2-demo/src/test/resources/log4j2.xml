@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration packages="com.chunfen.wx">
+
+    <Properties>
+       <Property name="DEFAULT_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%t] [%F:%L] - %m%n</Property>
+    </Properties>
+
+
+     <Appenders>
+         <Console name="Console" target="SYSTEM_OUT">
+             <PatternLayout pattern="${DEFAULT_PATTERN}" />
+         </Console>
+         <File name="LOCAL_FILE" fileName="/Users/admin/Codespace/some-demo/log4j2-demo/logs/test.log">
+             <PatternLayout pattern="${DEFAULT_PATTERN}" />
+         </File>
+         <RollingFile name="LOCAL_ROLLING_FILE" fileName="/Users/admin/Codespace/some-demo/log4j2-demo/logs/test-rolling.log"
+                      filePattern="/Users/admin/Codespace/some-demo/log4j2-demo/logs/test-rolling.%d{yyyy-MM-dd-HH}.log">
+             <PatternLayout pattern="${DEFAULT_PATTERN}"/>
+             <Policies>
+                 <TimeBasedTriggeringPolicy/>
+                 <SizeBasedTriggeringPolicy size="2 B"/>
+             </Policies>
+         </RollingFile>
+         <DemoAppender name="demo_appender">
+             <DemoLayout name="demo_layout" encode="utf-8"/>
+         </DemoAppender>
+     </Appenders>
+
+     <Loggers>
+         <!-- 3rdparty Loggers -->
+         <Logger name="org.springframework.core" level="info" />
+         <Logger name="org.springframework.beans" level="info" />
+         <Logger name="org.springframework.context" level="info" />
+         <Logger name="org.springframework.web" level="info" />
+
+         <Root level="info">
+             <!--<AppenderRef ref="Console"/>-->
+             <!--<AppenderRef ref="LOCAL_FILE"/>-->
+             <!--<AppenderRef ref="LOCAL_ROLLING_FILE"/>-->
+             <AppenderRef ref="demo_appender"/>
+         </Root>
+     </Loggers>
+ </Configuration>

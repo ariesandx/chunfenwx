@@ -1,0 +1,28 @@
+# 公共配置
+spring:
+  # dubbo配置
+  dubbo:
+    zkAddress:
+    applicationName: mybatis-plus-demo-test
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+
+  # 数据库配置
+#  datasource:
+#    type: com.alibaba.druid.pool.RayDruidDataSource
+
+  # 打包配置文件
+  profiles:
+    active: "@activatedProperties@"
+
+# memcached
+#memcached:
+#  allow-clear: true
+
+# mybatis
+mybatis-plus:
+#  config-location: classpath:config/mybatis-config.xml
+  mapper-locations: classpath:mapper/*.xml
+
+logging:
+  config: classpath:config/logging-config.xml

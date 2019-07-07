@@ -1,0 +1,37 @@
+group 'com.chunfen.wx'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'war'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'ch.qos.logback:logback-classic:1.2.3'
+    testCompile 'junit:junit:4.12'
+}
+
+// 闭包方法
+//创建 文件夹
+def createDir = {
+    path ->
+        File dir = new File(path)
+        if(!dir.exists()){
+            dir.mkdirs();
+        }
+}
+
+task makeWebapp(){
+
+    // 依赖的模块
+    // dependsOn <task_name>
+    def paths = ['src/main/webapp']
+    doFirst {
+        paths.forEach(createDir)
+    }
+}

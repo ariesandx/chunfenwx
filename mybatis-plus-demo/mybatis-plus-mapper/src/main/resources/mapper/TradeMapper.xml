@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chunfen.wx.mybatisplus.mapper.TradeMapper">
+    <resultMap id="TRADE_RM" type="com.chunfen.wx.mybatisplus.domain.Trade">
+        <id column="tid" property="tid"/>
+        <result column="title" property="title"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="TRADE_RM">
+        select * from trade
+    </select>
+
+    <select id="selectMap" resultType="map">
+        select tid, title, trade_id from trade
+    </select>
+    <select id="selectListMap" resultType="java.util.Map">
+        select tid, title, trade_id from trade
+    </select>
+</mapper>

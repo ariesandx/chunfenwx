@@ -1,0 +1,24 @@
+# 正式环境
+spring:
+  # dubbo配置
+  dubbo:
+    jdUserService:
+      version: 1.0.0
+    dbInfoRequest:
+      version: 2.0.0_DB
+
+  # 数据库配置
+  datasource:
+      url: jdbc:mysql://jddb-online-e276ede707b94e77.jcloud.com:3306/jd_main?useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true
+      username: jd_main
+      diamondCoord: 036de80e-188e-47fd-94ca-f03edb733aa6.jd_main
+
+# memcached
+#memcached:
+  #address:
+  #username: 3c69d760d911423b
+  #password: ZO5fd5hTD5Km
+
+# 日志
+logging:
+  path: /data/project/nymph-dubbo/code

@@ -1,0 +1,15 @@
+# 测试环境
+spring:
+  # dubbo配置
+  dubbo:
+    applicationName: mybatis-plus-demo-test
+    dbInfoRequest:
+      version: 2.0.0_DB
+  datasource:
+    url: jdbc:mysql://localhost:3306/mybatis_2
+    username: root
+    password:
+
+
+
+

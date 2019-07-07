@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chunfen.wx.sharding.mapper.TradeMapper">
+    <resultMap id="TRADE_RM" type="com.chunfen.wx.sharding.domain.Trade">
+        <id column="tid" property="tid"/>
+        <result column="title" property="title"/>
+    </resultMap>
+
+    <select id="selectOne" resultMap="TRADE_RM" parameterType="com.chunfen.wx.sharding.domain.Trade">
+        select * from trade
+    </select>
+
+</mapper>
