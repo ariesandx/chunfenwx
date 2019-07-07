@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 public class TopicSender {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(HelloReceiver.class);
+
     @Autowired
     private AmqpTemplate rabbitTemplate;
 
