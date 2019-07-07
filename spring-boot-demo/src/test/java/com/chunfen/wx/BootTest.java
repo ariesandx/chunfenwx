@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.chunfen.wx.domain.User;
 import com.chunfen.wx.domain.UserMapper;
-import com.chunfen.wx.mq.sender.HelloSender;
-import com.chunfen.wx.mq.sender.TopicSender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,25 +58,5 @@ public class BootTest {
     @Test
     public void getOneList() throws Exception{
         System.out.println(OBJECT_MAPPER.writeValueAsString(userMapper.getOne(3)));
-    }
-
-    @Autowired
-    private HelloSender helloSender;
-
-    @Autowired
-    private TopicSender topicSender;
-
-    @Test
-    public void hello() throws Exception {
-        helloSender.send();
-    }
-
-    @Test
-    public void topicSender() throws Exception {
-//        for(int i=0; i<100; i++){
-//            topicSender.send();
-//        }
-
-        Thread.sleep(10 * 1000);
     }
 }

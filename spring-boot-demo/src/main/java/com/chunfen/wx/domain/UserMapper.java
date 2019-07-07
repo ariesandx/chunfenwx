@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface UserMapper extends BaseMapper<User>{
 //    xml wrapper 混用
-    List<User> getAll(@Param("ew")QueryWrapper<User> queryWrapper);
+    List<User> getAll(@Param("ew") QueryWrapper<User> queryWrapper);
 
-    User getOne(@Param("id")int id);
+    User getOne(@Param("id") int id);
 }
