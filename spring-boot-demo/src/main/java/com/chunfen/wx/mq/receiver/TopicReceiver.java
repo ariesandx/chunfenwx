@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 /**
  * Created by xi.w on 2019/5/2.
  */
-@Component
+//@Component
 //@RabbitListener(queues = "topic1")
-@RabbitListener(queues = "topic2")
+//@RabbitListener(queues = "topic2")
 public class TopicReceiver {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(HelloReceiver.class);

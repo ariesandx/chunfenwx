@@ -74,6 +74,19 @@
             <artifactId>sqlite-jdbc</artifactId>
             <!--<version>3.27.2</version>-->
         </dependency>
+
+        <!-- Spring Cache -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <!-- EhCache -->
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+        </dependency>
+
     </dependencies>
 
     <!-- Package as an executable jar -->

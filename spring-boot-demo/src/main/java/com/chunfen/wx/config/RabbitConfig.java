@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Created by xi.w on 2019/5/1.
  */
-@Configuration
+//@Configuration
 public class RabbitConfig {
 
     public final static String message = "topic1";

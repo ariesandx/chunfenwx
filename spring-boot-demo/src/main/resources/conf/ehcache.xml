@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
+    <!--<cache name="user"-->
+    <!--eternal="false"-->
+    <!--maxEntriesLocalHeap="0"-->
+    <!--timeToIdleSeconds="50">-->
+    <!--</cache>-->
+
+    <!-- 默认缓存 -->
+    <defaultCache
+            maxEntriesLocalHeap="10000"
+            eternal="false"
+            timeToLiveSeconds="10"
+            maxEntriesLocalDisk="10000000"
+            diskExpiryThreadIntervalSeconds="5"
+            memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap"/>
+    </defaultCache>
+
+    <cache
+            name="test"
+            maxEntriesLocalHeap="10000"
+            eternal="false"
+            timeToLiveSeconds="10"
+            maxEntriesLocalDisk="10000000"
+            diskExpiryThreadIntervalSeconds="5"
+            memoryStoreEvictionPolicy="LRU"/>
+</ehcache>

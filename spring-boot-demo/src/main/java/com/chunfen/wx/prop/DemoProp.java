@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 /**
  * Created by xi.w on 2018-10-20.
  */
-@Component
+//@Component
 public class DemoProp {
 
     //自动读取配置文件

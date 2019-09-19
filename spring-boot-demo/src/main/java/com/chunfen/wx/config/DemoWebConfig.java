@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 public class DemoWebConfig {
 
     // 注册过滤器
-    @Bean
+//    @Bean
     FilterRegistrationBean<DemoFilter> demoFilter(){
         FilterRegistrationBean<DemoFilter> bean = new FilterRegistrationBean<DemoFilter>();
         bean.setFilter(new DemoFilter());
@@ -22,7 +22,7 @@ public class DemoWebConfig {
         return bean;
     }
 
-    @Bean
+//    @Bean
     public SqlInterceptor performanceInterceptor(){
         SqlInterceptor performanceInterceptor = new SqlInterceptor();
         performanceInterceptor.setFormat(true);

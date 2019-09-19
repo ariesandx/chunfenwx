@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.chunfen.wx.domain.User;
 import com.chunfen.wx.domain.UserMapper;
 import com.chunfen.wx.prop.DemoProp1;
+import com.chunfen.wx.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,6 +28,9 @@ public class HelloController {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private DemoProp1 demoProp1;
@@ -57,4 +62,10 @@ public class HelloController {
 
         return user;
     }
+
+    @GetMapping("/testcache")
+    public List<User> testcache(){
+        return userService.getList();
+    }
+
 }

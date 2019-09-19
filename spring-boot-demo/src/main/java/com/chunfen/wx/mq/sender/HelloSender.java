@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * Created by xi.w on 2019/5/1.
  */
-@Component
+//@Component
 public class HelloSender {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(HelloReceiver.class);
