@@ -109,7 +109,7 @@ public class SocketTest {
     }
 
     /*
-    nio 基本演示
+    nio socket 基本演示
      */
     @Test
     public void socket3() throws Exception{
@@ -117,6 +117,14 @@ public class SocketTest {
         Thread sThread = new Thread(new Runnable() {
             @Override
             public void run() {
+
+                // 创建 server 端
+                // 1.创建Selector
+                // 2.创建 ServerSocketChannel
+                // 3.绑定 ip port
+                // 4.设置为 非阻塞，注册到 Selector 中
+                // 5.selector.select() 等待 就绪的 channel
+                // 6. 有就绪的 channel 将它取出 并 accept  拿到 socketChannel 进行 交互
                 try (Selector selector = Selector.open();
                      ServerSocketChannel serverSocket = ServerSocketChannel.open();) {// 创建 Selector 和 Channel
                     serverSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(), 8888));
@@ -140,8 +148,8 @@ public class SocketTest {
             }
 
             private void sayHelloWorld(ServerSocketChannel server) throws IOException {
-                try (SocketChannel client = server.accept();) {
-                    client.write(Charset.defaultCharset().encode("Hello world!"));
+                try (SocketChannel sSocket = server.accept();) {
+                    sSocket.write(Charset.defaultCharset().encode("Hello world!"));
                 }
             }
 
@@ -150,12 +158,15 @@ public class SocketTest {
 
         Thread.sleep(200);
 
+        //创建 client端
+        //1.创建 SocketChannel
+        //2.连接到 ip port
+        // 3.和服务端交互 read or write
+
         // Socket 客户端（接收信息并打印）
         try (SocketChannel cSocket = SocketChannel.open()) {
 
-            SocketAddress socketAddress = new InetSocketAddress(InetAddress.getLocalHost(),8888);
-
-            cSocket.connect(socketAddress);
+            cSocket.connect(new InetSocketAddress(InetAddress.getLocalHost(),8888));
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
