@@ -50,10 +50,12 @@ public class SocketTest {
             @Override
             public void run() {
                 try {
+                    // serverSocket 绑定 ip port
                     ServerSocket serverSocket = new ServerSocket(8888);
-                    // 服务器 等待连接
                     while (true) {
+                        // serverSocket 等待连接
                         Socket socket = serverSocket.accept();
+                        //获取socket 后开启线程处理
                         new RequestHandler(socket).start();
                     }
                 } catch (IOException e) {
@@ -66,7 +68,9 @@ public class SocketTest {
 
         // Socket 客户端（接收信息并打印）
         try (Socket cSocket = new Socket(InetAddress.getLocalHost(), 8888)) {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(cSocket.getInputStream()));
+            BufferedReader bufferedReader = new BufferedReader(
+                    new InputStreamReader(cSocket.getInputStream()));
+            //读取数据并打印
             bufferedReader.lines().forEach(s -> System.out.println("客户端：" + s));
 
         } catch (IOException e) {
@@ -87,7 +91,6 @@ public class SocketTest {
             public void run() {
                 try {
                     ServerSocket serverSocket = new ServerSocket(8888);
-                    // 服务器 等待连接
                     while (true) {
                         Socket socket = serverSocket.accept();
                         executor.execute(new RequestHandler(socket));
@@ -99,7 +102,6 @@ public class SocketTest {
         });
         sThread.start();
 
-        // Socket 客户端（接收信息并打印）
         try (Socket cSocket = new Socket(InetAddress.getLocalHost(), 8888)) {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(cSocket.getInputStream()));
             bufferedReader.lines().forEach(s -> System.out.println("客户端：" + s));
@@ -129,6 +131,7 @@ public class SocketTest {
                 try (Selector selector = Selector.open();
                      ServerSocketChannel serverSocket = ServerSocketChannel.open();) {// 创建 Selector 和 Channel
                     serverSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(), 8888));
+                    //阻塞模式下，注册操作是不允许的
                     serverSocket.configureBlocking(false);
                     // 注册到 Selector，并说明关注点
                     serverSocket.register(selector, SelectionKey.OP_ACCEPT);
@@ -148,8 +151,8 @@ public class SocketTest {
                 }
             }
 
-            private void sendData(ServerSocketChannel server) throws IOException {
-                try (SocketChannel sSocket = server.accept();) {
+            private void sendData(ServerSocketChannel serverSocketChannel) throws IOException {
+                try (SocketChannel sSocket = serverSocketChannel.accept();) {
 
                     Message<String> stringMessage = new Message<>();
                     stringMessage.setCode(1);
@@ -197,11 +200,11 @@ public class SocketTest {
         int read=0;
         try {
             while((read = channel.read(buffer)) != -1){
-                buffer.flip();
+                buffer.flip();//将 limit = pos; pos = 0 目的是 让 get 方法 从 开头读取
                 byte[] bytes = new byte[read];
                 buffer.get(bytes);
-                baos.write(bytes);
-                buffer.clear();
+                baos.write(bytes);// 读到的 bytes 写入 目标数组
+                buffer.clear();//将 pos = 0; limit = capacity; 准备下次 读取 新数据
             }
             return toObject(baos.toByteArray(), Message.class);
         } catch (IOException e) {
