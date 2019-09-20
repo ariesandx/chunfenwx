@@ -1,5 +1,7 @@
 package com.chunfen.wx.tomcat.tcp;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
 import java.io.*;
@@ -9,7 +11,6 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -138,7 +139,7 @@ public class SocketTest {
                         while (iter.hasNext()) {
                             SelectionKey key = iter.next();
                             // 生产系统中一般会额外进行就绪状态检查
-                            sayHelloWorld((ServerSocketChannel) key.channel());
+                            sendData((ServerSocketChannel) key.channel());
                             iter.remove();
                         }
                     }
@@ -147,9 +148,17 @@ public class SocketTest {
                 }
             }
 
-            private void sayHelloWorld(ServerSocketChannel server) throws IOException {
+            private void sendData(ServerSocketChannel server) throws IOException {
                 try (SocketChannel sSocket = server.accept();) {
-                    sSocket.write(Charset.defaultCharset().encode("Hello world!"));
+
+                    Message<String> stringMessage = new Message<>();
+                    stringMessage.setCode(1);
+                    stringMessage.setData("Hello World!");
+                    stringMessage.setMessage("你好");
+
+                    System.out.println("server:");
+                    System.out.println("server send: "+ new ObjectMapper().writeValueAsString(stringMessage));
+                    sSocket.write(ByteBuffer.wrap(toBytes(stringMessage)));
                 }
             }
 
@@ -168,24 +177,92 @@ public class SocketTest {
 
             cSocket.connect(new InetSocketAddress(InetAddress.getLocalHost(),8888));
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            Message<String> objectMessage = receiveData(cSocket);
 
-            ByteBuffer buffer = ByteBuffer.allocate(1024);
-
-            int read=0;
-            while((read = cSocket.read(buffer)) != -1){
-                buffer.flip();
-                byte[] bytes = new byte[read];
-                buffer.get(bytes);
-                baos.write(bytes);
-                buffer.clear();
-            }
-            String s1 = new String(baos.toByteArray(), "utf-8");
-            System.out.println("client :" + s1);
+            System.out.println("client receive:");
+            System.out.println(objectMessage.getClass());
+            System.out.println(objectMessage.getData().getClass());
+            System.out.println("client receive: " + new ObjectMapper().writeValueAsString(objectMessage));
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    private <T> Message<T> receiveData(SocketChannel channel){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+
+        int read=0;
+        try {
+            while((read = channel.read(buffer)) != -1){
+                buffer.flip();
+                byte[] bytes = new byte[read];
+                buffer.get(bytes);
+                baos.write(bytes);
+                buffer.clear();
+            }
+            return toObject(baos.toByteArray(), Message.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 数组转对象
+     * @param bytes
+     * @return
+     */
+    public <T> T toObject (byte[] bytes, Class<T> clazz) {
+
+        try {
+            return new ObjectMapper().readValue(bytes, clazz);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
+    public byte[] toBytes(Object object){
+        try {
+            return new ObjectMapper().writeValueAsBytes(object);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+}
+
+class Message<T>{
+    private Integer code;
+    private T data;
+    private String message;
+
+    public Integer getCode() {
+        return code;
+    }
+
+    public void setCode(Integer code) {
+        this.code = code;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }
