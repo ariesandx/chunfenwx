@@ -150,21 +150,6 @@ public class SocketTest {
                     e.printStackTrace();
                 }
             }
-
-            private void sendData(ServerSocketChannel serverSocketChannel) throws IOException {
-                try (SocketChannel sSocket = serverSocketChannel.accept();) {
-
-                    Message<String> stringMessage = new Message<>();
-                    stringMessage.setCode(1);
-                    stringMessage.setData("Hello World!");
-                    stringMessage.setMessage("你好");
-
-                    System.out.println("server:");
-                    System.out.println("server send: "+ new ObjectMapper().writeValueAsString(stringMessage));
-                    sSocket.write(ByteBuffer.wrap(toBytes(stringMessage)));
-                }
-            }
-
         });
         sThread.start();
 
@@ -189,6 +174,20 @@ public class SocketTest {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void sendData(ServerSocketChannel serverSocketChannel) throws IOException {
+        try (SocketChannel sSocket = serverSocketChannel.accept();) {
+
+            Message<String> stringMessage = new Message<>();
+            stringMessage.setCode(1);
+            stringMessage.setData("Hello World!");
+            stringMessage.setMessage("你好");
+
+            System.out.println("server:");
+            System.out.println("server send: "+ new ObjectMapper().writeValueAsString(stringMessage));
+            sSocket.write(ByteBuffer.wrap(toBytes(stringMessage)));
         }
     }
 
