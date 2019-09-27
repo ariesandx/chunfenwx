@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>tcp</module>
+        <module>nio</module>
     </modules>
 
     <build>
