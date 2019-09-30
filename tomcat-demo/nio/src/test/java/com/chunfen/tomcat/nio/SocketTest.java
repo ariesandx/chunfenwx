@@ -17,10 +17,11 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class SocketTest {
+public class SocketTest extends BaseTest{
 
-    private static ObjectMapper objectMapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
+    /**
+     *  bio 处理 handler
+     */
     class RequestHandler extends Thread{
 
         private Socket socket;
@@ -422,34 +423,4 @@ public class SocketTest {
         return null;
     }
 
-}
-
-class Message<T>{
-    private Integer code;
-    private T data;
-    private String message;
-
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }
