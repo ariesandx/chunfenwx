@@ -45,23 +45,50 @@ public class SocketHandler implements Runnable{
     }
 
     /**
+     *
      * 处理读取数据
+     *
      */
     @Override
     public void run() {
+//        方式一： 回调对象只有  socketHandler 所以 要进行 selectKey 可读可写状态判断
+//        try {
+//            System.out.println(Thread.currentThread().getName() + " SocketHandler running");
+//            if(selectionKey.isReadable()){
+//                read();
+//            } else if(selectionKey.isWritable()){
+//                send();
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+//        方式二  使用状态模式（State-Object Pattern）
+//        selectionKey 是 context 环境  attachment 就是  state
+//        更换 attachment  reactor 的 dispatch 方法 会执行不同的回调
         try {
-            System.out.println(Thread.currentThread().getName() + " SocketHandler running");
-            if(selectionKey.isReadable()){
-                read();
-            } else if(selectionKey.isWritable()){
-                send();
+            socketChannel.read(input);
+            if (inputIsComplete()) {
+                process();
+                selectionKey.attach(new Sender());  //状态迁移, Read后变成write, 用Sender作为新的callback对象
+                selectionKey.interestOps(SelectionKey.OP_WRITE);
+                selectionKey.selector().wakeup();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    class Sender implements Runnable {
+        public void run(){
+            try {
+                send();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-    void read() throws IOException {
+    private void read() throws IOException {
         input.clear();
         socketChannel.read(input);
         if (inputIsComplete()) {
@@ -72,7 +99,7 @@ public class SocketHandler implements Runnable{
 //            selectionKey.selector().wakeup();
         }
     }
-    void send() throws IOException {
+    private void send() throws IOException {
 
         output.clear();
         Message<Date> dateMessage = new Message<Date>();
