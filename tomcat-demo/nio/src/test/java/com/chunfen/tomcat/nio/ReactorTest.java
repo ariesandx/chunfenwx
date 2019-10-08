@@ -1,7 +1,5 @@
 package com.chunfen.tomcat.nio;
 
-import com.chunfen.tomcat.nio.BaseTest;
-import com.chunfen.tomcat.nio.Message;
 import com.chunfen.tomcat.nio.reactor.Reactor;
 import org.junit.Test;
 

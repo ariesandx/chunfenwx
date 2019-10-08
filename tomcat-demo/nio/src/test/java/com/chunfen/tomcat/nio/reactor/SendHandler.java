@@ -31,7 +31,7 @@ public class SendHandler implements Runnable {
             dateMessage.setData(new Date());
             dateMessage.setCode(11);
 
-            System.out.println(Thread.currentThread().getName() + " SocketHandler send message" + objectMapper.writeValueAsString(dateMessage));
+            System.out.println(Thread.currentThread().getName() + " SendHandler send message" + objectMapper.writeValueAsString(dateMessage));
 
             socketChannel.write(ByteBuffer.wrap(objectMapper.writeValueAsBytes(dateMessage)));
             //write完就结束了, 关闭select key

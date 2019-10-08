@@ -45,7 +45,7 @@ public class ReadHandler implements Runnable {
                 process();
                 selectionKey.attach(new SendHandler(socketChannel, selectionKey));  //状态迁移, Read后变成write, 用Sender作为新的callback对象
                 selectionKey.interestOps(SelectionKey.OP_WRITE);
-//                selectionKey.selector().wakeup();
+                selectionKey.selector().wakeup();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -63,7 +63,7 @@ public class ReadHandler implements Runnable {
         byte[] bytes = new byte[input.remaining()];
         input.get(bytes);
 //        Message obj = objectMapper.readValue(bytes, Message.class);
-        System.out.println(Thread.currentThread().getName() + " SocketHandler read message"+new String(bytes, "utf-8"));
+        System.out.println(Thread.currentThread().getName() + " ReadHandler read message"+new String(bytes, "utf-8"));
         return;
     }
 }

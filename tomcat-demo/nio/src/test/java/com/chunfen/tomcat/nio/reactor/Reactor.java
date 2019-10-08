@@ -35,7 +35,9 @@ public class Reactor implements Runnable{
             SelectionKey selectionKey = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
             //利用selectionKey的attache功能绑定Acceptor 如果有事情，触发Acceptor
-            selectionKey.attach(new Acceptor(this));
+//            selectionKey.attach(new Acceptor(this));
+            //使用线程池 的 acceptor
+            selectionKey.attach(new PoolAcceptor(this));
             System.out.println(Thread.currentThread().getName() + " Reactor starting");
         } catch (IOException e) {
             e.printStackTrace();
