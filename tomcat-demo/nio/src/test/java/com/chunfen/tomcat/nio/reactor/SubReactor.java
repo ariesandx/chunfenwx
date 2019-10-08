@@ -2,44 +2,42 @@ package com.chunfen.tomcat.nio.reactor;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
-import lombok.Setter;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
-@Getter
-@Setter
-public class Reactor implements Runnable{
+public class SubReactor extends Thread{
 
     private ObjectMapper objectMapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     private Selector selector;
-    private ServerSocketChannel serverSocketChannel;
 
-    public Reactor(int port){
+    ThreadPoolExecutor pool = new ThreadPoolExecutor(3, 5, 1000,TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(100), new ThreadPoolExecutor.AbortPolicy());
+
+    public SubReactor(){
         try {
-            selector=Selector.open();
-            serverSocketChannel=ServerSocketChannel.open();
-            InetSocketAddress inetSocketAddress=new InetSocketAddress(InetAddress.getLocalHost(),port);
-            serverSocketChannel.bind(inetSocketAddress);
-            serverSocketChannel.configureBlocking(false);
+            selector = Selector.open();
+            System.out.println(Thread.currentThread().getName() + " SubReactor selector open");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-            //向selector注册该channel
-            SelectionKey selectionKey = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-
-            //利用selectionKey的attache功能绑定Acceptor 如果有事情，触发Acceptor
-//            selectionKey.attach(new Acceptor(this));
-            //使用线程池 的 acceptor
-            selectionKey.attach(new PoolAcceptor(this));
-            System.out.println(Thread.currentThread().getName() + " Reactor starting");
-        } catch (IOException e) {
+    public void register(SocketChannel socketChannel){
+        try {
+            System.out.println(Thread.currentThread().getName() + " SubReactor register socketChannel");
+            // 一个坑 如果 selector 优先 被select() 方法阻塞， 要优先调用 wakeup()方法，再进行 register 的动作
+//            selector.wakeup();
+//            new ReadHandler(selector, socketChannel);
+            pool.execute(new ReadHandler(selector, socketChannel));
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -47,7 +45,7 @@ public class Reactor implements Runnable{
     @Override
     public void run() {
         try {
-            System.out.println(Thread.currentThread().getName() + " Reactor started");
+            System.out.println(Thread.currentThread().getName() + " SubReactor started");
             while(!Thread.interrupted()){
                 selector.select();
                 Set<SelectionKey> selectionKeys = selector.selectedKeys();
@@ -58,11 +56,11 @@ public class Reactor implements Runnable{
                     //来一个事件 第一次触发一个accepter线程
                     //以后触发SocketReadHandler
                     SelectionKey selectionKey = iterator.next();
-                    System.out.println(Thread.currentThread().getName() + " Reactor from client select" + objectMapper.writeValueAsString(selectionKey));
+                    System.out.println(Thread.currentThread().getName() + " SubReactor from client select" + objectMapper.writeValueAsString(selectionKey));
 
                     //所有的关心的 io 事件 都 通过 dispatch 进行分发
                     dispatch(selectionKey);
-    //                selectionKeys.clear();
+                    //                selectionKeys.clear();
                     iterator.remove();
                 }
             }
@@ -70,7 +68,7 @@ public class Reactor implements Runnable{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(Thread.currentThread().getName() + " Reactor run end");
+        System.out.println(Thread.currentThread().getName() + " SubReactor run end");
     }
 
     /**

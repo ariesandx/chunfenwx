@@ -20,18 +20,13 @@ public class ReadHandler implements Runnable {
 
     public ReadHandler(Selector selector, SocketChannel socketChannel)  throws IOException {
         this.socketChannel=socketChannel;
-        socketChannel.configureBlocking(false);
-
-        this.selectionKey = this.socketChannel.register(selector, 0);
+        this.socketChannel.configureBlocking(false);
 
         //将SelectionKey绑定为本Handler 下一步有事件触发时，将调用本类的run方法。
-        //参看dispatch(SelectionKey key)
+        // 一个坑 如果 selector 优先 被select() 方法阻塞， 要优先调用 wakeup()方法，再进行 register 的动作
+        selector.wakeup();
+        this.selectionKey = this.socketChannel.register(selector, SelectionKey.OP_READ);
         selectionKey.attach(this);
-
-        //同时将SelectionKey标记为可读，以便读取。
-        selectionKey.interestOps(SelectionKey.OP_READ);
-        // 可以 立即wakeup  也可不调用
-//        selector.wakeup();
     }
 
     @Override

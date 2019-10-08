@@ -16,14 +16,14 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class Reactor implements Runnable{
+public class MainReactor implements Runnable{
 
     private ObjectMapper objectMapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     private Selector selector;
     private ServerSocketChannel serverSocketChannel;
 
-    public Reactor(int port){
+    public MainReactor(int port){
         try {
             selector=Selector.open();
             serverSocketChannel=ServerSocketChannel.open();
@@ -37,7 +37,10 @@ public class Reactor implements Runnable{
             //利用selectionKey的attache功能绑定Acceptor 如果有事情，触发Acceptor
 //            selectionKey.attach(new Acceptor(this));
             //使用线程池 的 acceptor
-            selectionKey.attach(new PoolAcceptor(this));
+//            selectionKey.attach(new PoolAcceptor(this));
+            SubReactor subReactor = new SubReactor();
+            subReactor.start();
+            selectionKey.attach(new MainSubAcceptor(this, subReactor));
             System.out.println(Thread.currentThread().getName() + " Reactor starting");
         } catch (IOException e) {
             e.printStackTrace();
