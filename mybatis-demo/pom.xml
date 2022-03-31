@@ -10,7 +10,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <mybatis.demo.spring.version>4.3.20.RELEASE</mybatis.demo.spring.version>
+        <mybatis.demo.spring.version>5.3.18</mybatis.demo.spring.version>
     </properties>
 
     <dependencies>
